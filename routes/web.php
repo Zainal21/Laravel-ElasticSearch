@@ -20,9 +20,15 @@ Route::get('/', function () {
 
 
 Route::get('/test-elastic-response', function () {
+    $host_elastic = env('ELASTIC_HOST', 'localhost');
+    $port_elastic = env('ELASTIC_PORT', '9200');
+    $username_elastic = env('ELASTIC_USERNAME', 'elastic');
+    $password_elastic = env('ELASTIC_PASSWORD', 'root');
+    $connection_elastic = $host_elastic . ':'.$port_elastic;
     $client = ClientBuilder::create()
-    ->setHosts(['localhost:9200'])
-    ->setBasicAuthentication('elastic', 'wVfxie=VMbWZK9nmKZZw')
+    ->setHosts([$connection_elastic])
+    ->setBasicAuthentication($username_elastic,$password_elastic)
     ->build();
     $response = $client->info();
+    return response()->json(json_decode((string)$response->getBody()));  
 });
